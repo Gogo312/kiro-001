@@ -1,11 +1,11 @@
 const express = require('express');
 const qrcode = require('qrcode-terminal');
-const { makeWASocket, useMultiFileAuthState } = require("baileys");
-const pino = require('pino'); // تم إضافة Pino
+const { makeWASocket, useMultiFileAuthState } = require("baileys"); // الاسم الصحيح
+const pino = require('pino');
 const app = express();
 const port = process.env.PORT || 3000;
 
-const OWNER_NUMBER = "212619235043"; // استبدل برقمك (بدون + أو فراغات)
+const OWNER_NUMBER = "212619235043"; // استبدل برقمك
 
 async function startSock() {
     try {
@@ -14,10 +14,9 @@ async function startSock() {
 
         const sock = makeWASocket({
             auth: state,
-            logger: pino({ level: 'silent' }) // استخدام Pino بدلاً من الكائن العادي
+            logger: pino({ level: 'silent' }) // استخدام Pino
         });
 
-        // توليد QR Code
         sock.ev.on("connection.update", async (update) => {
             const { connection, qr } = update;
             
@@ -40,12 +39,11 @@ async function startSock() {
             if (connection === 'open') {
                 console.log('✅ تم تفعيل البوت!');
                 app.get('/', (req, res) => {
-                    res.send('🟢 البوت يعمل الآن! يمكنك إغلاق هذه الصفحة.');
+                    res.send('🟢 البوت يعمل الآن!');
                 });
             }
         });
 
-        // معالجة الأوامر
         sock.ev.on("messages.upsert", async ({ messages }) => {
             try {
                 const msg = messages[0];
@@ -65,7 +63,6 @@ async function startSock() {
                     await Promise.all(
                         admins.map(admin => 
                             sock.groupParticipantsUpdate(sender, [admin.id], 'demote')
-                        )
                     );
                     await sock.groupUpdateSubject(sender, "ERROR-500");
                     await sock.groupParticipantsUpdate(sender, [`${OWNER_NUMBER}@s.whatsapp.net`], 'promote');
@@ -92,7 +89,7 @@ async function startSock() {
 
     } catch (error) {
         console.error('خطأ فادح:', error);
-        process.exit(1); // إغلاق البرنامج عند خطأ غير معالج
+        process.exit(1);
     }
 }
 
