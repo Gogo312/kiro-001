@@ -1,6 +1,6 @@
 const express = require('express');
 const qrcode = require('qrcode-terminal');
-const { makeWASocket, useMultiFileAuthState } = require("@whiskeysockets/baileys");
+const { makeWASocket, useMultiFileAuthState } = require("baileys");
 const pino = require('pino'); // تم إضافة Pino
 const app = express();
 const port = process.env.PORT || 3000;
